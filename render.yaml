@@ -1,0 +1,38 @@
+# Render Blueprint: New > Blueprint in the Render dashboard, then pick this repo.
+services:
+  - type: web
+    name: low-watch
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /login
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CRON_SECRET
+        sync: false
+      - key: APP_USERNAME
+        sync: false
+      - key: APP_PASSWORD
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+      - key: ALERT_BASIS
+        value: close
+      - key: NEAR_LOW_PCT
+        value: "2"
+      - key: STOCK_EXCHANGE
+        value: BOTH

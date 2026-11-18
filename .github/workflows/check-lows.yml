@@ -1,0 +1,24 @@
+name: Check 3-month lows
+
+on:
+  schedule:
+    # Every 30 minutes during NSE hours, Mon–Fri (times are UTC; IST = UTC+5:30)
+    # 04:00–09:30 UTC ≈ 09:30–15:00 IST
+    - cron: "0,30 4-9 * * 1-5"
+    # One final check after close, 15:35 IST
+    - cron: "5 10 * * 1-5"
+  workflow_dispatch: {}   # lets you run it by hand from the Actions tab
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call /api/check
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl --fail-with-body -sS --max-time 180 --retry 2 --retry-delay 20 -X POST \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${APP_URL%/}/api/check"
